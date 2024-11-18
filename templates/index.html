@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحميل الصور</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { margin-top: 50px; }
+        input[type="text"] { padding: 10px; width: 300px; }
+        button { padding: 10px 20px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>أدخل رابط الصورة لتحميلها</h1>
+        <p>تأكد من أن الرابط المقدم هو رابط صالح للصورة (سواء كان بصيغة .jpg, .png, .gif, إلخ).</p>
+        <input type="text" id="image-url" placeholder="أدخل الرابط هنا">
+        <button onclick="downloadImage()">تحميل</button>
+    </div>
+    <script>
+        function downloadImage() {
+            const url = document.getElementById("image-url").value;
+            if (url) {
+                fetch(`/download?url=${encodeURIComponent(url)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("خطأ في تنزيل الصورة.");
+                        }
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "downloaded_image.jpg";
+                        link.click();
+                    })
+                    .catch(error => alert(error.message));
+            } else {
+                alert("الرجاء إدخال رابط.");
+            }
+        }
+    </script>
+</body>
+</html>
